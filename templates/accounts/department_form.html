@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}إدارة الوحدات الإدارية{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/department_form.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="form-container">
+    <div class="form-header">
+        <i class="fas fa-building fa-lg"></i>
+        <h2>{% if form.instance.pk %}تعديل بيانات الإدارة{% else %}إضافة وحدة إدارية جديدة{% endif %}</h2>
+    </div>
+
+    <form method="post">
+        {% csrf_token %}
+        
+        <div class="form-grid">
+            {% for field in form %}
+                <div class="form-group {% if field.name == 'parent' or field.name == 'name' %}full-width{% endif %}">
+                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    {{ field }}
+                    
+                    {% if field.help_text %}
+                        <span class="helptext" style="font-size: 0.75rem; color: #95a5a6;">{{ field.help_text|safe }}</span>
+                    {% endif %}
+                    
+                    {% for error in field.errors %}
+                        <span style="color: #e74c3c; font-size: 0.8rem;">{{ error }}</span>
+                    {% endfor %}
+                </div>
+            {% endfor %}
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn-save">
+                <i class="fas fa-check"></i> حفظ الإدارة
+            </button>
+            <a href="{% url 'department_list' %}" class="btn-back">
+                <i class="fas fa-undo"></i> إلغاء والرجوع
+            </a>
+        </div>
+    </form>
+</div>
+
+<script>
+    // إضافة كلاسات التنسيق تلقائياً للحقول
+    document.querySelectorAll('input, select').forEach(function(el) {
+        if (el.type !== 'checkbox') {
+            el.classList.add('form-control');
+        }
+    });
+</script>
+{% endblock %}

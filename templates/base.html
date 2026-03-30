@@ -1,0 +1,121 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}نظام الإدارة{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+
+    <header>
+        <a href="{% url 'home' %}" style="text-decoration: none; display: flex; align-items: center;">
+            <div class="logo-area">
+                <img src="{% static 'images/logo.png' %}" alt="Logo" class="logo-img">
+                <div class="header-titles">
+                    <h1>المركز الوطني لضمان جودة واعتماد</h1>
+                    <h2>المؤسسات التعليمية والتدريبية</h2>
+                </div>
+            </div>
+        </a>
+    </header>
+
+    <div class="main-container">
+        <div class="sidebar">
+            <h3><i class="fas fa-shield-halved"></i> لوحة التحكم</h3>
+            
+            <a href="{% url 'home' %}" class="menu-btn" style="text-decoration: none; background-color: rgba(26, 188, 156, 0.1); margin-bottom: 5px;">
+                <span><i class="fas fa-home"></i> الصفحة الرئيسية</span>
+            </a>
+
+            <button class="menu-btn" onclick="toggleMenu('structureMenu', this)">
+                <span><i class="fas fa-sitemap"></i> الهيكل التنظيمي</span>
+                <i class="fas fa-chevron-down arrow"></i>
+            </button>
+            
+            <div id="structureMenu" class="submenu">
+                
+                <button class="menu-btn" style="padding-right: 45px; font-size: 14px;" onclick="toggleMenu('deptSubMenu', this)">
+                    <span><i class="fas fa-building"></i> الإدارات</span>
+                    <i class="fas fa-chevron-down arrow"></i>
+                </button>
+                <div id="deptSubMenu" class="submenu">
+                    <a href="{% url 'department_list' %}" style="padding-right: 65px;"><i class="fas fa-list"></i> عرض الكل</a>
+                    <a href="{% url 'department_create' %}" style="padding-right: 65px;"><i class="fas fa-plus-circle"></i> إضافة إدارة</a>
+                </div>
+
+                <button class="menu-btn" style="padding-right: 45px; font-size: 14px;" onclick="toggleMenu('posSubMenu', this)">
+                    <span><i class="fas fa-briefcase"></i> المناصب</span>
+                    <i class="fas fa-chevron-down arrow"></i>
+                </button>
+                <div id="posSubMenu" class="submenu">
+                    <a href="{% url 'position_list' %}" style="padding-right: 65px;">
+        <i class="fas fa-list"></i> عرض الكل
+    </a>
+    
+    <a href="{% url 'position_create' %}" style="padding-right: 65px;">
+        <i class="fas fa-plus-circle"></i> إضافة منصب
+    </a>
+                </div>
+                
+                <button class="menu-btn" style="padding-right: 45px; font-size: 14px;" onclick="toggleMenu('userSubMenu', this)">
+                    <span><i class="fas fa-users"></i> المستخدمين</span>
+                    <i class="fas fa-chevron-down arrow"></i>
+                </button>
+                <div id="userSubMenu" class="submenu">
+                    <a href="{% url 'user_list' %}" style="padding-right: 65px;"><i class="fas fa-list"></i> عرض الكل</a>
+                    <a href="{% url 'user_create' %}" style="padding-right: 65px;"><i class="fas fa-user-plus"></i> إضافة مستخدم</a>
+                </div>
+            </div>
+            <a href="#" class="menu-btn" style="text-decoration: none;">
+                <span><i class="fas fa-file-archive"></i> الأرشيف ذكي</span>
+            </a>
+        </div>
+
+        <div class="main-wrapper">
+            {% if messages %}
+                <div class="messages-container">
+                    {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }}">
+                            <i class="fas {% if message.tags == 'success' %}fa-check-circle{% else %}fa-exclamation-circle{% endif %}"></i>
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <div class="content">
+                {% block content %}
+                {% endblock %}
+            </div>
+
+            <footer>
+                <p>© 2026 - نظام المراسلات الإدارية الموحد والأرشفة الذكية</p>
+            </footer>
+        </div>
+    </div>
+
+    <script>
+        function toggleMenu(menuId, btn) {
+            if(window.event) window.event.stopPropagation(); 
+            var menu = document.getElementById(menuId);
+            var arrow = btn.querySelector('.arrow');
+            
+            // لإغلاق القوائم الأخرى عند فتح قائمة جديدة (اختياري، يخلي السايد بار أرتب)
+            // menu.classList.toggle('show'); 
+
+            menu.classList.toggle('show');
+            if (arrow) arrow.classList.toggle('rotate');
+        }
+
+        // كود إخفاء الرسائل تلقائياً بعد 4 ثواني
+        setTimeout(function() {
+            let msg = document.querySelector('.messages-container');
+            if (msg) msg.style.display = 'none';
+        }, 4000);
+    </script>
+</body>
+</html>

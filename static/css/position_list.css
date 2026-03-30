@@ -1,0 +1,88 @@
+/* تنسيق صفحة قائمة المناصب */
+.pos-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+.pos-header h2 {
+    color: #2c3e50;
+    font-size: 1.6rem;
+}
+
+.btn-add-pos {
+    background-color: #8e44ad; /* لون بنفسجي للمناصب */
+    color: white;
+    padding: 10px 20px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn-add-pos:hover {
+    background-color: #7d3c98;
+    box-shadow: 0 4px 12px rgba(142, 68, 173, 0.3);
+}
+
+/* تنسيق الجدول */
+.pos-table-container {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+}
+
+.pos-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: right;
+}
+
+.pos-table th {
+    background-color: #f8f9fa;
+    color: #7f8c8d;
+    padding: 15px;
+    border-bottom: 2px solid #edf2f7;
+}
+
+.pos-table td {
+    padding: 15px;
+    border-bottom: 1px solid #edf2f7;
+}
+
+/* علامات الصلاحية */
+.badge-approve {
+    padding: 4px 10px;
+    border-radius: 5px;
+    font-size: 0.8rem;
+    font-weight: bold;
+}
+
+.can-approve { background: #e8f5e9; color: #2e7d32; } /* أخضر */
+.no-approve { background: #fbe9e7; color: #c62828; }  /* أحمر */
+
+.rank-circle {
+    display: inline-block;
+    width: 25px;
+    height: 25px;
+    line-height: 25px;
+    text-align: center;
+    background: #f1f3f5;
+    border-radius: 50%;
+    font-size: 0.85rem;
+    font-weight: bold;
+    color: #34495e;
+}
+
+.action-links {
+    display: flex;
+    gap: 15px;
+}
+
+.edit-link { color: #3498db; }
+.delete-link { color: #e74c3c; }

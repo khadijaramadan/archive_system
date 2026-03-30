@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}الصفحة الرئيسية{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/home.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="welcome-section">
+    <h2>  نظام الإدارة الذكي</h2>
+    
+</div>
+
+<div class="dashboard-grid">
+    <a href="{% url 'user_list' %}" class="dash-card card-users">
+        <i class="fas fa-users"></i>
+        <h3>المستخدمين</h3>
+        <p>إدارة الحسابات، الصلاحيات، وإضافة موظفين جدد للنظام.</p>
+        <span class="dash-link">عرض القائمة</span>
+    </a>
+
+    <a href="{% url 'department_list' %}" class="dash-card card-depts">
+    <i class="fas fa-building"></i>
+    <h3>الإدارات</h3>
+    <p>تنظيم الهيكل الإداري للمؤسسة وتوزيع الأقسام.</p>
+    <span class="dash-link">عرض الإدارات</span>
+</a>
+    <a href="{% url 'position_list' %}" class="dash-card card-positions">
+    <i class="fas fa-briefcase"></i>
+    <h3>المناصب</h3>
+    <p>تعريف المسميات الوظيفية وتحديد المهام لكل منصب.</p>
+    <span class="dash-link">عرض المناصب</span>
+</a>
+</div>
+{% endblock %}

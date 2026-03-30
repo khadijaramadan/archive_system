@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}إدارة الإدارات والوحدات{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/department_list.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="dept-header">
+    <h2><i class="fas fa-sitemap"></i> هيكل الإدارات والوحدات</h2>
+    <a href="{% url 'department_create' %}" class="btn-add-dept">
+        <i class="fas fa-plus"></i> إضافة وحدة جديدة
+    </a>
+</div>
+
+<div class="dept-table-container">
+    <table class="dept-table">
+        <thead>
+            <tr>
+                <th>رمز الوحدة</th>
+                <th>اسم الإدارة / الوحدة</th>
+                <th>النوع</th>
+                <th>تبعية الوحدة</th>
+                <th>سيادية؟</th>
+                <th>الإجراءات</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for dept in departments %}
+            <tr>
+                <td><strong>{{ dept.code }}</strong></td>
+                <td>{{ dept.name }}</td>
+                <td>
+                    <span class="badge-unit {% if dept.unit_type == 'office' %}type-office{% else %}type-dept{% endif %}">
+                        {{ dept.get_unit_type_display }}
+                    </span>
+                </td>
+                <td>{{ dept.parent.name|default:"---" }}</td>
+                <td>
+                    {% if dept.is_sovereign %}
+                        <span class="sovereign-tag"><i class="fas fa-crown"></i> نعم</span>
+                    {% else %}
+                        لا
+                    {% endif %}
+                </td>
+                <td class="action-links">
+                    <a href="{% url 'department_update' dept.pk %}" class="edit-link" title="تعديل">
+                        <i class="fas fa-edit"></i>
+                    </a>
+                    <a href="{% url 'department_delete' dept.pk %}" class="delete-link" title="حذف">
+                        <i class="fas fa-trash"></i>
+                    </a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="6" style="text-align: center; padding: 30px; color: #95a5a6;">
+                    لا توجد إدارات مضافة حالياً.
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

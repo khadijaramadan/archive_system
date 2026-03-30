@@ -1,0 +1,100 @@
+/* حاوية فورم المناصب */
+.form-container {
+    max-width: 800px;
+    margin: 20px auto;
+    background: white;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+}
+
+.form-header {
+    border-bottom: 2px solid #f1f3f5;
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: #2c3e50;
+}
+
+.form-header i {
+    color: #8e44ad; /* لون المناصب */
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+/* جعل المسمى الوظيفي والإدارة يأخذان السطر بالكامل لو تحبي */
+.full-width {
+    grid-column: span 2;
+}
+
+.form-group label {
+    font-weight: 600;
+    color: #34495e;
+    font-size: 0.9rem;
+}
+
+.form-group input, 
+.form-group select {
+    padding: 12px;
+    border: 1px solid #dcdde1;
+    border-radius: 8px;
+    transition: 0.3s;
+}
+
+.form-group input:focus, .form-group select:focus {
+    border-color: #8e44ad;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(142, 68, 173, 0.1);
+}
+
+/* تنسيق خاص لحقل "صلاحية الاعتماد" لأنه Checkbox */
+.checkbox-group {
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+    padding: 10px;
+    background: #f8f9fa;
+    border-radius: 8px;
+}
+
+.form-actions {
+    margin-top: 35px;
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    border-top: 1px solid #f1f3f5;
+    padding-top: 20px;
+}
+
+.btn-save {
+    background-color: #8e44ad;
+    color: white;
+    border: none;
+    padding: 12px 30px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+.btn-save:hover {
+    background-color: #7d3c98;
+    transform: translateY(-2px);
+}
+
+.btn-back {
+    color: #7f8c8d;
+    text-decoration: none;
+}

@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}إدارة المناصب الوظيفية{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/position_list.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="pos-header">
+    <h2><i class="fas fa-briefcase"></i> دليل المناصب والمسميات</h2>
+    <a href="{% url 'position_create' %}" class="btn-add-pos">
+        <i class="fas fa-plus"></i> إضافة منصب جديد
+    </a>
+</div>
+
+<div class="pos-table-container">
+    <table class="pos-table">
+        <thead>
+            <tr>
+                <th>رتبة</th>
+                <th>المسمى الوظيفي</th>
+                <th>الإدارة التابع لها</th>
+                <th>صلاحية الاعتماد</th>
+                <th>الإجراءات</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for pos in positions %}
+            <tr>
+                <td><span class="rank-circle">{{ pos.rank }}</span></td>
+                <td><strong>{{ pos.title }}</strong></td>
+                <td>{{ pos.department.name }}</td>
+                <td>
+                    {% if pos.can_approve %}
+                        <span class="badge-approve can-approve"><i class="fas fa-check-double"></i> معتمد</span>
+                    {% else %}
+                        <span class="badge-approve no-approve">لا يملك</span>
+                    {% endif %}
+                </td>
+                <td class="action-links">
+                    <a href="{% url 'position_update' pos.pk %}" class="edit-link" title="تعديل">
+                        <i class="fas fa-edit"></i>
+                    </a>
+                    <a href="{% url 'position_delete' pos.pk %}" class="delete-link" title="حذف">
+                        <i class="fas fa-trash"></i>
+                    </a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5" style="text-align: center; padding: 30px; color: #95a5a6;">
+                    لا توجد مناصب مضافة حالياً.
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
