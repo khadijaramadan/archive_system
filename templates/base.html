@@ -1,17 +1,74 @@
 {% load static %}
 
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <title>{% block title %}نظام الإدارة{% endblock %}</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css">
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <style>
+        .submenu { display: none; }
+        .submenu.show { display: block; }
+        .rotate { transform: rotate(180deg); }
+        /* تنسيق إضافي لقائمة التبديل */
+        .switch-user-dropdown .dropdown-menu {
+            text-align: right;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        .switch-user-dropdown .btn-switch {
+            background-color: #2c3e50;
+            color: white;
+            border-radius: 20px;
+            font-size: 13px;
+            padding: 5px 15px;
+            border: none;
+        }
+        .switch-user-dropdown .btn-switch:hover {
+            background-color: #1a252f;
+        }
+        .user-info-display {
+            font-size: 14px;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-left: 15px;
+        }
+        /* تحسينات إضافية للتصميم الاحترافي */
+        .sidebar-header-box {
+            padding: 20px;
+            text-align: center;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            margin-bottom: 10px;
+        }
+        .user-card-footer {
+            background: rgba(0,0,0,0.2);
+            margin: 15px;
+            padding: 12px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .menu-label-small {
+            padding: 10px 25px 5px;
+            font-size: 11px;
+            text-transform: uppercase;
+            color: #8fa0b3;
+            letter-spacing: 1px;
+        }
+        /* تنسيق مخصص لقائمة الإشعارات */
+        .notification-item:hover { background-color: #f8f9fa; }
+        .border-bottom-light { border-bottom: 1px solid #f1f5f9; }
+    </style>
+
     {% block extra_css %}{% endblock %}
 </head>
 <body>
 
-    <header>
+    <header class="d-flex justify-content-between align-items-center px-4">
         <a href="{% url 'home' %}" style="text-decoration: none; display: flex; align-items: center;">
             <div class="logo-area">
                 <img src="{% static 'images/logo.png' %}" alt="Logo" class="logo-img">
@@ -21,23 +78,191 @@
                 </div>
             </div>
         </a>
+
+        <div class="d-flex align-items-center">
+            <div class="dropdown d-inline-block ms-3">
+                <button class="btn btn-link position-relative p-0 text-decoration-none" type="button" id="bellDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="fas fa-bell fs-5 text-secondary"></i>
+                    {% if unread_count > 0 %}
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-circle bg-danger" 
+                              style="font-size: 0.6rem; padding: 0.35em 0.5em; border: 2px solid white;">
+                            {{ unread_count }}
+                        </span>
+                    {% endif %}
+                </button>
+                
+                <ul class="dropdown-menu dropdown-menu-end shadow border-0 py-2 text-end" aria-labelledby="bellDropdown" style="min-width: 300px; border-radius: 12px;">
+                    <li><h6 class="dropdown-header fw-bold border-bottom pb-2 mb-1 text-dark">الإشعارات الجديدة</h6></li>
+                    
+                    {% for notify in recent_notifications %}
+                    <li>
+                        <a class="dropdown-item p-3 border-bottom" href="{% url 'correspondence_detail' notify.correspondence.pk %}">
+                            <div class="d-flex align-items-center">
+                                <div class="ms-3">
+                                    {# تعديل أيقونة الإشعار بناءً على نوع الإجراء #}
+                                    {% if notify.action_type == 'REPLY' %}
+                                        <span class="rounded-circle bg-danger bg-opacity-10 p-2 d-inline-block">
+                                            <i class="fas fa-exclamation-circle text-danger"></i>
+                                        </span>
+                                    {% else %}
+                                        <span class="rounded-circle bg-primary bg-opacity-10 p-2 d-inline-block">
+                                            <i class="fas fa-envelope text-primary"></i>
+                                        </span>
+                                    {% endif %}
+                                </div>
+                                
+                                <div class="flex-grow-1 text-end">
+                                    <h6 class="mb-1 fw-bold" style="font-size: 0.9rem;">
+                                        {{ notify.correspondence.subject }}
+                                        
+                                        {# التعديل الجوهري هنا: نعتمد على action_type بدل الحالة #}
+                                        {% if notify.action_type == 'REPLY' %}
+                                            <span class="badge bg-danger rounded-pill small ms-1" style="font-size: 0.6rem;">طلب تعديل</span>
+                                        {% elif notify.instruction_note == "تم تنفيذ التعديلات المطلوبة وإعادة الإرسال للمراجعة والاعتماد." %}
+                                            <span class="badge bg-success rounded-pill small ms-1" style="font-size: 0.6rem;">تم التعديل</span>
+                                        {% else %}
+                                            <span class="badge bg-info rounded-pill small ms-1" style="font-size: 0.6rem;">جديد</span>
+                                        {% endif %}
+                                    </h6>
+                                    <small class="text-muted d-block">
+                                        من: {{ notify.sender.get_full_name|default:notify.sender.username }}
+                                    </small>
+                                </div>
+                            </div>
+                        </a>
+                    </li>
+                    {% empty %}
+                    <li class="p-4 text-center text-muted">لا توجد إشعارات جديدة</li>
+                    {% endfor %}
+                    
+                    <li><a class="dropdown-item text-center small text-primary fw-bold mt-2" href="{% url 'inbox' %}">عرض كل المراسلات</a></li>
+                </ul>
+            </div>
+
+            <div class="user-info-display me-3 text-end">
+                <i class="fas fa-user-circle ms-1"></i>
+                {{ user.get_full_name|default:user.username }} <br>
+                <span class="badge bg-light text-dark fw-normal border">{{ user.job_title|default:"مستخدم مصرح" }}</span>
+            </div>
+
+            {% if user.is_superuser or request.user.username != 'khadija_ramadan' %}
+            <div class="dropdown switch-user-dropdown">
+                <button class="btn btn-switch dropdown-toggle" type="button" id="switchUserMenu" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="fas fa-exchange-alt ms-1"></i> تبديل الحساب 
+                </button>
+                <ul class="dropdown-menu shadow border-0 text-end" aria-labelledby="switchUserMenu" style="border-radius: 12px; min-width: 250px;">
+                    <li><h6 class="dropdown-header border-bottom pb-2 mb-2 text-dark fw-bold">اختر مستخدم :</h6></li>
+                    
+                    <li>
+                        <a class="dropdown-item py-2 fw-bold text-success" href="{% url 'switch_user' 'khadija_ramadan' %}">
+                            <i class="fas fa-user-shield ms-2"></i> حسابي الأصلي (Admin)
+                        </a>
+                    </li>
+                    
+                    <li><hr class="dropdown-divider"></li>
+                    <li><h6 class="dropdown-header text-muted small fw-bold">إدارة ضمان الجودة:</h6></li>
+
+                    <li>
+                        <a class="dropdown-item py-2 fw-semibold" href="{% url 'switch_user' 'mohammed_user' %}">
+                            <i class="fas fa-user ms-2 text-secondary"></i> محمد (موظف جودة)
+                        </a>
+                    </li>
+
+                    <li>
+                        <a class="dropdown-item py-2 fw-semibold" href="{% url 'switch_user' 'salem_head' %}">
+                            <i class="fas fa-user-tie ms-2 text-primary"></i> سالم (رئيس قسم)
+                        </a>
+                    </li>
+
+                    <li>
+                        <a class="dropdown-item py-2 fw-semibold" href="{% url 'switch_user' 'khaled_dir' %}">
+                            <i class="fas fa-user-edit ms-2 text-info"></i> خالد (مدير إدارة الجودة)
+                        </a>
+                    </li>
+
+                    <li><hr class="dropdown-divider"></li>
+                    <li><h6 class="dropdown-header text-muted small fw-bold">إدارة الشؤون الإدارية والمالية:</h6></li>
+
+                    <li>
+                        <a class="dropdown-item py-2 fw-semibold" href="{% url 'switch_user' 'ahmed_dir' %}">
+                            <i class="fas fa-user-tie ms-2 text-info"></i> أحمد (مدير الإدارية)
+                        </a>
+                    </li>
+
+                    <li>
+                        <a class="dropdown-item py-2 fw-semibold" href="{% url 'switch_user' 'omar_head' %}">
+                            <i class="fas fa-user ms-2 text-primary"></i> عمر (رئيس قسم)
+                        </a>
+                    </li>
+
+                    <li>
+                        <a class="dropdown-item py-2 fw-semibold" href="{% url 'switch_user' 'sami_user' %}">
+                            <i class="fas fa-user-edit ms-2 text-secondary"></i> سامي (موظف)
+                        </a>
+                    </li>
+
+                    <li><hr class="dropdown-divider"></li>
+                    <li><h6 class="dropdown-header text-muted small fw-bold">أدوار أخرى:</h6></li>
+
+                    <li>
+                        <a class="dropdown-item py-2 fw-semibold" href="{% url 'switch_user' 'adel_arch' %}">
+                            <i class="fas fa-archive ms-2 text-warning"></i> عادل (الأرشيف)
+                        </a>
+                    </li>
+
+                    <li>
+                        <a class="dropdown-item py-2 fw-semibold" href="{% url 'switch_user' 'director_general' %}">
+                            <i class="fas fa-user-crown ms-2 text-danger"></i> د. فرج (المدير العام)
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            {% endif %}
+        </div>
     </header>
 
     <div class="main-container">
-        <div class="sidebar">
-            <h3><i class="fas fa-shield-halved"></i> لوحة التحكم</h3>
+        <div class="sidebar d-flex flex-column">
+            <div class="sidebar-header-box py-4 text-center">
+                <i class="fas fa-file-invoice text-success fs-3 mb-2"></i>
+                <h6 class="text-white fw-bold mb-0">نظام الاتصالات الإدارية</h6>
+            </div>
             
-            <a href="{% url 'home' %}" class="menu-btn" style="text-decoration: none; background-color: rgba(26, 188, 156, 0.1); margin-bottom: 5px;">
+            <div class="menu-label-small">القائمة الرئيسية</div>
+            <a href="{% url 'home' %}" class="menu-btn {% if request.resolver_match.url_name == 'home' %}active{% endif %}" style="text-decoration: none;">
                 <span><i class="fas fa-home"></i> الصفحة الرئيسية</span>
             </a>
 
+            <div class="menu-label-small">المراسلات</div>
+            
+            <a href="{% url 'create_correspondence' %}" class="menu-btn mb-1" style="text-decoration: none; background-color: rgba(26, 188, 156, 0.2); border-right: 4px solid #1abc9c;">
+                <span class="fw-bold text-white"><i class="fas fa-plus-circle text-success"></i> مراسلة جديدة</span>
+            </a>
+
+            <a href="{% url 'inbox' %}" class="menu-btn d-flex justify-content-between align-items-center" style="text-decoration: none;">
+                <span><i class="fas fa-inbox"></i> صندوق الوارد</span>
+                <span class="badge rounded-pill bg-success" style="font-size: 10px;">جديد</span>
+            </a>
+            
+            <a href="{% url 'inbox' %}?type=INTERNAL" class="menu-btn" style="text-decoration: none;">
+                <span><i class="fas fa-exchange-alt"></i> مراسلات داخلية</span>
+            </a>
+            
+            <a href="{% url 'inbox' %}?type=OUTGOING" class="menu-btn" style="text-decoration: none;">
+                <span><i class="fas fa-paper-plane"></i> مراسلات صادرة</span>
+            </a>
+
+            <a href="{% url 'inbox' %}?type=INCOMING" class="menu-btn" style="text-decoration: none;">
+                <span><i class="fas fa-file-import"></i> مراسلات واردة</span>
+            </a>
+
+            <div class="menu-label-small">الإدارة</div>
             <button class="menu-btn" onclick="toggleMenu('structureMenu', this)">
-                <span><i class="fas fa-sitemap"></i> الهيكل التنظيمي</span>
+                <span><i class="fas fa-sitemap"></i> إعدادات النظام </span>
                 <i class="fas fa-chevron-down arrow"></i>
             </button>
             
             <div id="structureMenu" class="submenu">
-                
                 <button class="menu-btn" style="padding-right: 45px; font-size: 14px;" onclick="toggleMenu('deptSubMenu', this)">
                     <span><i class="fas fa-building"></i> الإدارات</span>
                     <i class="fas fa-chevron-down arrow"></i>
@@ -47,20 +272,6 @@
                     <a href="{% url 'department_create' %}" style="padding-right: 65px;"><i class="fas fa-plus-circle"></i> إضافة إدارة</a>
                 </div>
 
-                <button class="menu-btn" style="padding-right: 45px; font-size: 14px;" onclick="toggleMenu('posSubMenu', this)">
-                    <span><i class="fas fa-briefcase"></i> المناصب</span>
-                    <i class="fas fa-chevron-down arrow"></i>
-                </button>
-                <div id="posSubMenu" class="submenu">
-                    <a href="{% url 'position_list' %}" style="padding-right: 65px;">
-        <i class="fas fa-list"></i> عرض الكل
-    </a>
-    
-    <a href="{% url 'position_create' %}" style="padding-right: 65px;">
-        <i class="fas fa-plus-circle"></i> إضافة منصب
-    </a>
-                </div>
-                
                 <button class="menu-btn" style="padding-right: 45px; font-size: 14px;" onclick="toggleMenu('userSubMenu', this)">
                     <span><i class="fas fa-users"></i> المستخدمين</span>
                     <i class="fas fa-chevron-down arrow"></i>
@@ -70,9 +281,16 @@
                     <a href="{% url 'user_create' %}" style="padding-right: 65px;"><i class="fas fa-user-plus"></i> إضافة مستخدم</a>
                 </div>
             </div>
-            <a href="#" class="menu-btn" style="text-decoration: none;">
-                <span><i class="fas fa-file-archive"></i> الأرشيف ذكي</span>
-            </a>
+
+            <div class="mt-auto user-card-footer">
+                <div class="bg-primary rounded-circle d-flex align-items-center justify-content-center text-white" style="width: 38px; height: 38px;">
+                    <i class="fas fa-user-tie"></i>
+                </div>
+                <div class="overflow-hidden">
+                    <p class="mb-0 text-white small fw-bold text-truncate">{{ user.username }}</p>
+                    <small class="text-muted d-block text-truncate" style="font-size: 10px;">{{ user.email|default:"متصل الآن" }}</small>
+                </div>
+            </div>
         </div>
 
         <div class="main-wrapper">
@@ -98,20 +316,22 @@
         </div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
     <script>
         function toggleMenu(menuId, btn) {
             if(window.event) window.event.stopPropagation(); 
             var menu = document.getElementById(menuId);
             var arrow = btn.querySelector('.arrow');
             
-            // لإغلاق القوائم الأخرى عند فتح قائمة جديدة (اختياري، يخلي السايد بار أرتب)
-            // menu.classList.toggle('show'); 
-
-            menu.classList.toggle('show');
-            if (arrow) arrow.classList.toggle('rotate');
+            if (menu) {
+                menu.classList.toggle('show');
+            }
+            if (arrow) {
+                arrow.classList.toggle('rotate');
+            }
         }
 
-        // كود إخفاء الرسائل تلقائياً بعد 4 ثواني
         setTimeout(function() {
             let msg = document.querySelector('.messages-container');
             if (msg) msg.style.display = 'none';

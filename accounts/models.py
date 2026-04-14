@@ -1,7 +1,7 @@
 from django.db import models
-
+from django.conf import settings
 from django.contrib.auth.models import AbstractUser
-
+import datetime
 class Department(models.Model):
     UNIT_TYPES = [
         ('office', 'مكتب'),
@@ -20,9 +20,15 @@ class Department(models.Model):
      return self.name
     class Meta:
         ordering = ['level', 'name']
-
+    
 class Position(models.Model):
-    title = models.CharField(max_length=255, verbose_name="المسمى الوظيفي")
+    POSITION_CHOICES = [
+        ('مدير إدارة', 'مدير إدارة'),
+        ('رئيس قسم', 'رئيس قسم'),
+        ('موظف', 'موظف'),
+    ]
+    
+    title = models.CharField(max_length=255,choices=POSITION_CHOICES, verbose_name="المسمى الوظيفي")
     department = models.ForeignKey(Department, on_delete=models.CASCADE, related_name='positions', verbose_name="الإدارة")
     
     can_approve = models.BooleanField(default=False, verbose_name="يملك صلاحية الاعتماد")
@@ -48,4 +54,4 @@ class CustomUser(AbstractUser):
     class Meta:
         verbose_name = "الموظف"
         verbose_name_plural = "الموظفين"
-# Create your models here.
+#=======================================================================

@@ -45,3 +45,4 @@ class CustomUserAdmin(UserAdmin):
     search_fields = ('username', 'first_name', 'last_name')
     ordering = ('username',)
 # Register your models here.
+#==================================================================

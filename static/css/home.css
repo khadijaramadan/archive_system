@@ -1,74 +1,54 @@
-/* تنسيق الصفحة الرئيسية (لوحة البيانات) */
-.welcome-section {
-    margin-bottom: 30px;
+/* الألوان الأساسية للصورة */
+:root {
+    --bg-light: #f4f7fa;
+    --card-border: #eef2f6;
+    --text-main: #334155;
+    --primary-blue: #0d6efd;
 }
 
-.welcome-section h2 {
-    color: #2c3e50;
-    font-size: 1.8rem;
-    margin-bottom: 10px;
+body {
+    background-color: var(--bg-light) !important;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-.welcome-section p {
-    color: #7f8c8d;
-    font-size: 1.1rem;
-}
-
-/* حاوية الكروت */
-.dashboard-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 25px;
-    margin-top: 30px;
-}
-
-/* تنسيق الكارت الموحد */
-.dash-card {
-    padding: 30px;
+/* تنسيق الكروت العلوية */
+.top-stat-card {
+    background: white;
+    border: 1px solid var(--card-border);
     border-radius: 15px;
-    color: white;
-    text-align: center;
-    transition: 0.3s;
-    text-decoration: none;
+    padding: 20px;
+    text-align: right;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+}
+
+.top-stat-card h2 {
+    font-weight: 700;
+    color: var(--text-main);
+    margin-bottom: 5px;
+}
+
+.top-stat-card .label {
+    color: #94a3b8;
+    font-size: 0.85rem;
+}
+
+.icon-box {
+    width: 45px;
+    height: 45px;
+    background: #f8fafc;
+    border-radius: 10px;
     display: flex;
-    flex-direction: column;
     align-items: center;
-    gap: 15px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    justify-content: center;
+    color: #64748b;
 }
 
-.dash-card:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 12px 20px rgba(0,0,0,0.15);
+/* زر معاملة جديدة */
+.btn-new-corr {
+    background-color: var(--primary-blue);
+    color: white;
+    border-radius: 10px;
+    padding: 10px 20px;
+    font-weight: 600;
+    border: none;
 }
-
-.dash-card i {
-    font-size: 3rem;
-    margin-bottom: 10px;
-}
-
-.dash-card h3 {
-    margin: 0;
-    font-size: 1.4rem;
-}
-
-.dash-card p {
-    margin: 0;
-    font-size: 0.95rem;
-    opacity: 0.9;
-}
-
-.dash-link {
-    margin-top: 10px;
-    background: rgba(255, 255, 255, 0.2);
-    padding: 8px 20px;
-    border-radius: 20px;
-    font-weight: bold;
-    font-size: 0.9rem;
-    border: 1px solid rgba(255, 255, 255, 0.4);
-}
-
-/* ألوان الكروت */
-.card-users { background: linear-gradient(135deg, #1abc9c, #16a085); }
-.card-depts { background: linear-gradient(135deg, #3498db, #2980b9); }
-.card-positions { background: linear-gradient(135deg, #9b59b6, #8e44ad); }
