@@ -66,9 +66,14 @@ class HomeView(TemplateView):
         context['processing_corr'] = records.filter(status='PROCESSING').count()
         
         # ============================================================
-        # التعديل: استبعاد الداخلي من كرت المؤرشفة حسب طلب المشرف
+        # التعديل الجديد: الصندوق يحسب المراسلات اللي حالتها مكتملة 
+        # "بشرط" وجود إحالة لقسم الأرشيف (هكي الصادر المكتمل مش حيبان لين تحيليه)
         # ============================================================
-        context['completed_corr'] = records.filter(status='COMPLETED').exclude(corr_type='INTERNAL').count()
+        context['completed_corr'] = Correspondence.objects.filter(
+            status='COMPLETED',
+            referrals__receiver_dept__name="الأرشيف"  # تأكدي إن الاسم "الأرشيف" مطابق لجدول الأقسام
+        ).distinct().count()
+        # ============================================================
         
         context['draft_corr'] = records.filter(status='DRAFT').count()
         
@@ -78,8 +83,6 @@ class HomeView(TemplateView):
         # ============================================================
         # التصليح المطلوب لظهور الإشعارات عند محمد
         # ============================================================
-        # قمنا بحذف exclude(correspondence__status='DRAFT') 
-        # لكي تظهر المعاملات التي أعادها المدير للموظف (لأنها تصبح مسودة)
         qs_unread = Referral.objects.filter(
             receiver_user=self.request.user, 
             is_read=False

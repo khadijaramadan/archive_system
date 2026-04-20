@@ -158,3 +158,58 @@ footer {
 .arrow { transition: transform 0.3s; }
 .rotate { transform: rotate(180deg); }
 .sidebar i { width: 25px; }
+
+/* الأكواد المدمجة من كود البيس */
+.submenu { display: none; }
+.submenu.show { display: block; }
+.rotate { transform: rotate(180deg); }
+
+/* تنسيق إضافي لقائمة التبديل */
+.switch-user-dropdown .dropdown-menu {
+    text-align: right;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+}
+.switch-user-dropdown .btn-switch {
+    background-color: #2c3e50;
+    color: white;
+    border-radius: 20px;
+    font-size: 13px;
+    padding: 5px 15px;
+    border: none;
+}
+.switch-user-dropdown .btn-switch:hover {
+    background-color: #1a252f;
+}
+.user-info-display {
+    font-size: 14px;
+    font-weight: bold;
+    color: #2c3e50;
+    margin-left: 15px;
+}
+/* تحسينات إضافية للتصميم الاحترافي */
+.sidebar-header-box {
+    padding: 20px;
+    text-align: center;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    margin-bottom: 10px;
+}
+.user-card-footer {
+    background: rgba(0,0,0,0.2);
+    margin: 15px;
+    padding: 12px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.menu-label-small {
+    padding: 10px 25px 5px;
+    font-size: 11px;
+    text-transform: uppercase;
+    color: #8fa0b3;
+    letter-spacing: 1px;
+}
+/* تنسيق مخصص لقائمة الإشعارات */
+.notification-item:hover { background-color: #f8f9fa; }
+.border-bottom-light { border-bottom: 1px solid #f1f5f9; }
